@@ -59,7 +59,7 @@ public class Ball3DAgent : Agent
         gameObject.transform.Rotate(new Vector3(1, 0, 0), Random.Range(-10f, 10f));
         gameObject.transform.Rotate(new Vector3(0, 0, 1), Random.Range(-10f, 10f));
         m_BallRb.velocity = new Vector3(0f, 0f, 0f);
-        ball.transform.position = new Vector3(Random.Range(-1.5f, 1.5f), 4f, Random.Range(-1.5f, 1.5f))
+        ball.transform.position = new Vector3(Random.Range(-1.5f, 1.5f), Random.Range(4f, 6f), Random.Range(-1.5f, 1.5f))
             + gameObject.transform.position;
         //Reset the parameters when the Agent is reset.
         SetResetParameters();
