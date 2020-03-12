@@ -5,15 +5,25 @@ using MLAgents;
 
 public class DrivingAgent : Agent
 {
-    // Start is called before the first frame update
-    void Start()
+    // Generate a random goal position.
+    public override void InitializeAgent()
     {
-        
+    }
+    public override void AgentReset()
+    {
     }
 
-    // Update is called once per frame
-    void Update()
+    // Check if we collide with something.
+    // Check progress towards the goal.
+    public override void CollectObservations()
     {
-        
+    }
+
+    public override void AgentAction(float[] vectorAction)
+    {
+    }
+
+    public void SetResetParameters()
+    {
     }
 }
