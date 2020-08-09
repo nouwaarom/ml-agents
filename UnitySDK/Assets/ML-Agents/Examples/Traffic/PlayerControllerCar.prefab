@@ -1,5 +1,17 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &4454022587173486792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7300473406290535014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 943f75be73718454c9cef703f5f6fec2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2997496310444940190
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10,7 +22,7 @@ PrefabInstance:
     - target: {fileID: 5533027153043487224, guid: 8026a6fe38c20e14ea0390b741a9cd9a,
         type: 3}
       propertyPath: m_Name
-      value: Car
+      value: PlayerControllerCar
       objectReference: {fileID: 0}
     - target: {fileID: 8315043296588414784, guid: 8026a6fe38c20e14ea0390b741a9cd9a,
         type: 3}
@@ -35,7 +47,7 @@ PrefabInstance:
     - target: {fileID: 8315043296588414784, guid: 8026a6fe38c20e14ea0390b741a9cd9a,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 8315043296588414784, guid: 8026a6fe38c20e14ea0390b741a9cd9a,
         type: 3}
@@ -45,7 +57,7 @@ PrefabInstance:
     - target: {fileID: 8315043296588414784, guid: 8026a6fe38c20e14ea0390b741a9cd9a,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 8315043296588414784, guid: 8026a6fe38c20e14ea0390b741a9cd9a,
         type: 3}
@@ -60,12 +72,20 @@ PrefabInstance:
     - target: {fileID: 8315043296588414784, guid: 8026a6fe38c20e14ea0390b741a9cd9a,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 8315043296588414784, guid: 8026a6fe38c20e14ea0390b741a9cd9a,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4256484257659774912, guid: 8026a6fe38c20e14ea0390b741a9cd9a, type: 3}
+    - {fileID: 5543993707821161075, guid: 8026a6fe38c20e14ea0390b741a9cd9a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8026a6fe38c20e14ea0390b741a9cd9a, type: 3}
+--- !u!1 &7300473406290535014 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5533027153043487224, guid: 8026a6fe38c20e14ea0390b741a9cd9a,
+    type: 3}
+  m_PrefabInstance: {fileID: 2997496310444940190}
+  m_PrefabAsset: {fileID: 0}
