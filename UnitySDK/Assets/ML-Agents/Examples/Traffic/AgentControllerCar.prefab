@@ -30,11 +30,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    vectorObservationSize: 5
+    vectorObservationSize: 20
     numStackedVectorObservations: 1
-    vectorActionSize: 02000000
+    vectorActionSize: 0300000003000000
     vectorActionDescriptions: []
-    vectorActionSpaceType: 1
+    vectorActionSpaceType: 0
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_BehaviorType: 0
