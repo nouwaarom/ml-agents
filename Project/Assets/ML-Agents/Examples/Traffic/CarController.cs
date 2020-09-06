@@ -13,7 +13,7 @@ public class CarController : MonoBehaviour
     public bool gasPedalPressed = false;
     public bool brakePedalPressed = false;
     public bool steerLeft = false; 
-    public bool steerRight = false; 
+    public bool steerRight = false;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +22,7 @@ public class CarController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         // Update velocity and steer angle based on input.
         if (gasPedalPressed) {
@@ -71,19 +71,20 @@ public class CarController : MonoBehaviour
 
         // Update the forward position.
         float forward_velocity = Time.deltaTime * velocity * Mathf.Cos(steer_angle);
-        transform.position += forward * forward_velocity;
+        Vector3 newPosition = transform.position + forward * forward_velocity;
 
         // Update the sidewards position.
         Vector3 x_direction = (Quaternion.Euler(0, 90, 0) * forward.normalized).normalized;
-        transform.position +=  x_direction * (Time.deltaTime * 0.5f * velocity * Mathf.Sin(steer_angle));
-
+        newPosition += x_direction * (Time.deltaTime * 0.5f * velocity * Mathf.Sin(steer_angle));
+        transform.position = newPosition;
+        
         // Update the rotation.
         float y_rotation = Mathf.Atan((Time.deltaTime * velocity * Mathf.Sin(steer_angle) / vehicle_length));
         transform.Rotate(0, Mathf.Rad2Deg * y_rotation, 0);
     }
 
-    private void OnCollisionEnter(Collision other)
+    public void OnCollisionEnter(Collision other)
     {
-        velocity = Math.Max(velocity, 1.0f);
+        velocity = Math.Min(velocity, 0.0f);
     }
 }

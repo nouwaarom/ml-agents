@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class VisionRays : MonoBehaviour
 {
-    private const int numViewDirections = 16;
+    private const int numViewDirections = 3;
     private Vector3[] rays;
 
     private float collisionDistance = 1.1f;
@@ -18,22 +18,22 @@ public class VisionRays : MonoBehaviour
         distances = new float[numViewDirections+2];
         // Generate rays in every direction. 
         rays = new Vector3[numViewDirections];
-        float angleIncrement = (Mathf.PI * 2) / numViewDirections;
+        float angleIncrement = (Mathf.PI) / (numViewDirections+1);
 
         for (int i = 0; i < numViewDirections; i++) {
-            float x = Mathf.Sin(i * angleIncrement);
-            float z = Mathf.Cos (i * angleIncrement);
+            float x = Mathf.Sin((1+i) * angleIncrement);
+            float z = Mathf.Cos ((1+i) * angleIncrement);
             rays[i] = new Vector3 (x, 0, z);
         }
-        
-       // Split rays in rays looking to the front and rays going to the side.
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         float sphereRadius = 0.1f;
-        penalty = 0.0f; 
+        penalty = 0.0f;
+
+        int layerMask = ~(1 << 8);
         
        // Detect collisions. 
        RaycastHit hit;
@@ -42,16 +42,12 @@ public class VisionRays : MonoBehaviour
 
            bool isForward = i <= rays.Length / 2;
            Vector3 forward = (Quaternion.Euler(0, 90, 0) * transform.forward).normalized;
-           Vector3 origin = transform.position + (isForward ? 2.5f * forward : 2.5f * -forward);
+           Vector3 origin = transform.position + 2.5f * forward;
            float maxDistance = isForward ? 50.0f : 25.0f;
-           if (Physics.SphereCast (origin, sphereRadius, dir, out hit, maxDistance)) {
+           if (Physics.SphereCast (origin, sphereRadius, dir, out hit, maxDistance, layerMask)) {
                distances[i] = hit.distance;
                if (hit.distance > collisionDistance) {
-                   if (i <= rays.Length / 2) {
-                       Debug.DrawLine(origin, origin + (dir * hit.distance), Color.blue);
-                   } else {
-                       Debug.DrawLine(origin, origin + (dir * hit.distance), Color.green);
-                   }
+                   Debug.DrawLine(origin, origin + (dir * hit.distance), Color.blue);
                } else {
                    Debug.DrawLine(origin, origin + (dir * hit.distance), Color.red);
                    penalty = 1.0f;
@@ -61,7 +57,7 @@ public class VisionRays : MonoBehaviour
            }
        }
        
-       if (Physics.SphereCast (transform.position, sphereRadius, transform.forward, out hit, 25.0f)) {
+       if (Physics.SphereCast (transform.position, sphereRadius, transform.forward, out hit, 25.0f, layerMask)) {
            distances[numViewDirections] = hit.distance;
            if (hit.distance > collisionDistance) {
                Debug.DrawLine(transform.position, transform.position + (transform.forward * hit.distance), Color.green);
@@ -73,7 +69,7 @@ public class VisionRays : MonoBehaviour
            distances[numViewDirections] = 25.0f;
        }
        
-       if (Physics.SphereCast (transform.position, sphereRadius, -transform.forward, out hit, 25.0f)) {
+       if (Physics.SphereCast (transform.position, sphereRadius, -transform.forward, out hit, 25.0f, layerMask)) {
            distances[numViewDirections+1] = hit.distance;
            if (hit.distance > collisionDistance) {
                Debug.DrawLine(transform.position, transform.position + (-transform.forward * hit.distance), Color.green);

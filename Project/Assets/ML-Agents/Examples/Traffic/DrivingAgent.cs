@@ -8,10 +8,11 @@ using Unity.MLAgents.Sensors;
 public class DrivingAgent : Agent
 {
     private RouteProgressRater _progressRater;
+    private float previousProgress;
     private VisionRays _vision;
     CarController _car;
 
-    public float timeBetweenDecisionsAtInference;
+    public float timeBetweenDecisions = 0.2f;
     float m_TimeSinceDecision;
     
     public override void Initialize()
@@ -30,6 +31,8 @@ public class DrivingAgent : Agent
         transform.rotation = _progressRater.start.transform.rotation;
         _car.velocity = 0.0f;
         _car.steer_angle = 0.0f;
+        _vision.penalty = 0.0f;
+        previousProgress = 0.0f;
         
         SetResetParameters();
     }
@@ -38,28 +41,22 @@ public class DrivingAgent : Agent
     // Check progress towards the goal.
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(_vision.distances);
-        sensor.AddObservation(_car.velocity);
-        sensor.AddObservation(_car.steer_angle);
+        for (int i = 0; i < _vision.distances.Length; i++)
+        {
+            sensor.AddObservation(_vision.distances[i] / 25.0f);
+        }
+
+        sensor.AddObservation(_car.velocity / 15.0f);
+        sensor.AddObservation((_car.steer_angle + 0.7f * Mathf.PI) / (1.4f * Mathf.PI));
     }
 
     private void FixedUpdate()
     {
-        if (Academy.Instance.IsCommunicatorOn)
-        {
+        if (m_TimeSinceDecision >= timeBetweenDecisions) {
+            m_TimeSinceDecision = 0f;
             RequestDecision();
-        }
-        else
-        {
-            if (m_TimeSinceDecision >= timeBetweenDecisionsAtInference)
-            {
-                m_TimeSinceDecision = 0f;
-                RequestDecision();
-            }
-            else
-            {
-                m_TimeSinceDecision += Time.fixedDeltaTime;
-            }
+        } else {
+            m_TimeSinceDecision += Time.fixedDeltaTime;
         }
     }
 
@@ -67,21 +64,21 @@ public class DrivingAgent : Agent
     {
         var gas = (int)vectorAction[0];
         switch (gas) {
-            case 1:
+            case 0:
                 _car.gasPedalPressed = false;
                 _car.brakePedalPressed = false;
                 break;
-            case 0:
+            case 1:
                 _car.gasPedalPressed = true;
                 _car.brakePedalPressed = false;
                 break;
             case 2:
                 _car.gasPedalPressed = false;
-                _car.brakePedalPressed = false; // TODO, make true so that is learns to go forward as well.
+                _car.brakePedalPressed = true; // TODO, make true so that is learns to go forward as well.
                 break;
         }
         
-        var steering = (int)vectorAction[0];
+        var steering = (int)vectorAction[1];
         switch (steering) {
             case 0:
                 _car.steerLeft = false;
@@ -97,14 +94,19 @@ public class DrivingAgent : Agent
                 break;
         }
         
-        // Add reward and penalties.
-        AddReward(5.0f * _progressRater.progress);
-        AddReward(-_vision.penalty); // Collisions have a negative reward.
+        AddReward(_progressRater.progress-previousProgress);
+        previousProgress = _progressRater.progress;
 
-        if (_progressRater.progress > 0.98f) {
+        AddReward(-0.001f);
+        if (_vision.penalty > 0.0f) {
+            AddReward(-0.001f);
+        }
+
+        if (_progressRater.progress > 0.95f) {
+            AddReward(2.0f);
             EndEpisode(); // Finished.
         } else if (_progressRater.progress < -0.1f) { // Hard fail, if we drive back.
-            AddReward(-1000.0f);
+            AddReward(-10.0f);
             EndEpisode();
         }
     }
